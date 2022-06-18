@@ -1,5 +1,4 @@
 import os
-from re import template
 from flask import Flask, jsonify
 import redis
 from dotenv import load_dotenv
