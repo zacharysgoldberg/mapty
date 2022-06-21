@@ -1,1 +1,4 @@
 misc/
+venv
+.env
+uvenv

@@ -15,7 +15,7 @@ services:
     volumes:
       - ./app:/usr/src/app/nginx
     ports:
-      - 80:8080
+      - 8080:80
     depends_on:
       - web
 
