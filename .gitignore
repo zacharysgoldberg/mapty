@@ -2,3 +2,4 @@ misc/
 venv
 .env
 uvenv
+__pycache__/
