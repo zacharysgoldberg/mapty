@@ -40,17 +40,23 @@ a:visited {
   color: var(--color-brand--1);
 }
 
+.card-title {
+  height: 8.2rem;
+  align-self: center;
+  margin-bottom: 0.75rem;
+}
+
 /* SIDEBAR */
 .sidebar {
   flex-basis: 50rem;
-  background-color: var(--color-dark--1);
+  background-color: #004953;
   padding: 3rem 5rem 4rem 5rem;
   display: flex;
   flex-direction: column;
 }
 
 .logo {
-  height: 8.2rem;
+  height: 6.2rem;
   align-self: center;
   margin-bottom: 8rem;
 }
@@ -176,17 +182,6 @@ a:visited {
   font-size: 1.3rem;
   text-align: center;
   color: var(--color-light--1);
-}
-
-.twitter-link:link,
-.twitter-link:visited {
-  color: var(--color-light--1);
-  transition: all 0.2s;
-}
-
-.twitter-link:hover,
-.twitter-link:active {
-  color: var(--color-light--2);
 }
 
 /* MAP */

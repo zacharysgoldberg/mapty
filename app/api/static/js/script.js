@@ -16,7 +16,8 @@ class Workout {
     const months = [
       'January', 
       'February', 
-      'March', 'April', 
+      'March', 
+      'April', 
       'May',
       'June', 
       'July', 
