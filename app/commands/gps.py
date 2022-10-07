@@ -4,6 +4,7 @@ import time
 from sys import maxsize
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+from itertools import permutations
 
 
 # [Getting coordinates from address]
@@ -43,27 +44,35 @@ def TSP(coords, start):
     distances = distances_from_coords(coords)
     print(distances)
     # store all vertex apart from source vertex
-    vertex = [i for i in range(len(distances)) if i != start]
-    # store minimum weight Hamiltonian Cycle
+    vertex = [i for i in range(len(distances))]
+    # store minimum cost Hamiltonian Cycle
     min_path = maxsize
-    while True:
+    next_permutation = permutations(vertex)
+    path = []
+    for i in next_permutation:
+        visited = []
         # store current path cost
         current_cost = 0
         # compute current path cost
         k = start
-        for i in range(len(vertex)):
-            current_cost += distances[k][vertex[i]]
-            k = vertex[i]
+        for j in i:
+            visited.append(j)
+            current_cost += distances[k][j]
+            k = j
         current_cost += distances[k][start]
         # update minimum
         min_path = min(min_path, current_cost)
-        if not next_permutation(vertex):
-            break
+        if min_path < current_cost and visited[k - 1] not in path:
+            path.append(visited[k - 1])
 
+        # if not next_permutation(vertex):
+        #     break
+    print(visited)
+    print(path)
     return min_path
 
 
-def next_permutation(lst):
+def next_perm(lst):
     n = len(lst)
     i = n - 2
 
@@ -84,7 +93,6 @@ def next_permutation(lst):
         lst[left], lst[right] = lst[right], lst[left]
         left += 1
         right -= 1
-
     return True
 
 
