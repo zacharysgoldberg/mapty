@@ -1,3 +1,4 @@
-# Exercise Map
+# Pizza Drone
 
-Exercise mapping application that utilizes user geolocation data to record and update exercise input. Frontend completed, Flask backend in-progress.
+Pizza Drone mapping application that utilizes user geolocation data to record user selected delivery locations. Frontend complete, FastAPi backend in-progress, including OAuth 2.0.
+
