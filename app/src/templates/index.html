@@ -8,7 +8,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -19,15 +19,16 @@
       crossorigin=""></script>
 
     <!-- <script defer src="other.js"></script> -->
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <title>exercise map // Map your workouts</title>
+    <script defer src="{{ url_for('static', path='js/script.js') }}"></script>
+    <title>pizza drone // Map your orders</title>
   </head>
 
   <body>
     <div class="sidebar">
-      <h1 class="card-title">Exercise Map</h1>
-      <img src="{{url_for('static', filename='images/map.png')}}" alt="Logo" class="logo" />
-
+      <h1 class="card-title">Pizza Drone</h1>
+      <img src="{{url_for('static', path='images/map.png')}}" alt="Logo" class="logo" />
+      <tbody>
+      </tbody>
       <ul class="workouts">
         <form class="form hidden">
           <div class="form__row">

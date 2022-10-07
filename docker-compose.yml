@@ -1,23 +1,23 @@
 version: '3.8'
 services:
-  web:
-    build: ./app
-    restart: always
-    volumes:
-      - ./app:/usr/src/app
-    expose:
-      - 5000
-    depends_on:
-      - redis_db
-  nginx:
-    build: ./app/nginx
-    restart: always
-    volumes:
-      - ./app:/usr/src/app/nginx
-    ports:
-      - 8080:80
-    depends_on:
-      - web
+  # web:
+  #   build: ./app
+  #   restart: always
+  #   volumes:
+  #     - ./app:/usr/src/app
+  #   expose:
+  #     - 5000
+  #   depends_on:
+  #     - redis_db
+  # nginx:
+  #   build: ./app/nginx
+  #   restart: always
+  #   volumes:
+  #     - ./app:/usr/src/app/nginx
+  #   ports:
+  #     - 8080:80
+  #   depends_on:
+  #     - web
 
   redis_db:
     image: redislabs/redisearch:edge

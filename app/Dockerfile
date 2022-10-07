@@ -1,8 +1,10 @@
-FROM python:3.8-slim
+FROM python:3.9
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y
 
-EXPOSE 5000
+EXPOSE 80
+EXPOSE 443
+EXPOSE 8000
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -18,4 +20,4 @@ RUN python -m pip install -r requirements.txt
 WORKDIR /app
 COPY . /app
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn",'--bind', '0.0.0.0:8000', '-w', '4', "app:app"]
