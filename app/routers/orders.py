@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends
 from .auth import get_current_user
 from models import Order
 import requests
-from commands.gps import get_coords_by_address, TSP, distances_from_coords
+from commands.gps import get_coords_by_address, distances_from_coords
 import csv
 from . import templates
 # import pandas as pd
@@ -34,10 +34,10 @@ async def sort_order():
     orders = [order for order in pks]
     addresses = [Order.get(pk).address for pk in orders]
     coords = [get_coords_by_address(order) for order in addresses]
-    optimal_path = TSP(coords, 0)
+    # optimal_path = TSP(coords, 0)
     # order_of_path = [int(order) for order in orders]
 
-    return {'orders': optimal_path}
+    return {'orders': coords}
 
 # [Request to get the next order upon successful authorization]
 

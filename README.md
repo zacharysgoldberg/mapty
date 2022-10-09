@@ -4,4 +4,4 @@ Pizza Drone mapping application that utilizes user geolocation data to record us
 
 ## Algorithmic challenge
 
-To calculate the optimal path for the drone to follow and return to store requires a variation of the Travelling Salesman Problem. Currently utilizing "Greedy" algorithm to accomplish this with the help of google or-tools library.
+To calculate the optimal path for the drone to follow and return to store requires a variation of the Traveling Salesman Problem. Currently utilizing "Greedy" algorithm to accomplish this with the help of Googles OR-tools library.
