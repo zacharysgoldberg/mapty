@@ -1,4 +1,4 @@
-from .gps import get_coords_by_address, get_distance_by_coords
+from .gps import coords_by_address, dist_between_coords
 import requests
 from models import User, Order
 import time
@@ -43,7 +43,7 @@ class Drone:
 
                     print('Next order address:', address)
 
-                    self.next_coords = get_coords_by_address(address)
+                    self.next_coords = coords_by_address(address)
                     self.deliver_pizza(self.next_coords)
 
             else:
@@ -65,9 +65,9 @@ class Drone:
 
         print('Current coordinates: -----', self.current_coords, '-----')
         # [Calculating estimated range for drone to travel to address and back to store]
-        miles_to_address = get_distance_by_coords(
+        miles_to_address = dist_between_coords(
             self.current_coords, next_coords)
-        self.miles_to_store = get_distance_by_coords(
+        self.miles_to_store = dist_between_coords(
             next_coords, self.pizza_store)
         est_range = round(miles_to_address + self.miles_to_store, 2)
 
