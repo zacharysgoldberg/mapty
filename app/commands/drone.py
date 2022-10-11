@@ -11,17 +11,17 @@ class Drone:
     # [Drone attributes]
     def __init__(self):
         self.remaining_range = 25.00
+        # user selects first
         self.pizza_store = (34.22142886882653, -119.18323113902395)
         self.current_coords = ()
         self.access_token = True
         self.data = json.loads(requests.get(
             "http://localhost:8000/orders/optimize-path").text)
         # [Optimal path id order]
-        # self.orders = [order for order in self.data['orders']]
-        # print(self.orders)
-        # self.addresses = [
-        #     Order.get(pk).address for pk in self.data['orders']]
-        # print(self.addresses)
+        self.orders = [order for order in self.data['orders']]
+        self.addresses = [address for address in self.data['addresses']]
+        self.path = self.data['path']
+        print(f"{self.orders}\n{self.addresses}\n{self.path}")
 
     # [Making request to database for auth and order]
     def get_next_order(self):

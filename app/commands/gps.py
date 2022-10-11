@@ -1,7 +1,6 @@
 from geopy.geocoders import Nominatim
 from geopy import distance
 import time
-# import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 

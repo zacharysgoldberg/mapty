@@ -36,7 +36,7 @@ async def sort_order():
     coords = [coords_by_address(order) for order in addresses]
     optimal_path = find_path(coords)
 
-    return {'orders': addresses, 'path': optimal_path}
+    return {'orders': orders, 'addresses': addresses, 'path': optimal_path}
 
 # [Request to get the next order upon successful authorization]
 
