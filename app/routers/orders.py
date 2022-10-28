@@ -54,7 +54,6 @@ async def get_next_order(request: Request, pk: str):
     if next_order:
         print(next_order)
         return next_order
-
     return False
 
 # [To update order delivery to True]
@@ -69,6 +68,8 @@ async def deliver_order(request: Request, pk: str):
     # print(response.text)
 
     order = Order.get(pk)
-    order.status = 'completed'
-    order.save()
-    return True
+    if order:
+        order.status = 'completed'
+        order.save()
+        return order
+    return False
