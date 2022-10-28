@@ -61,18 +61,18 @@ a:visited {
   margin-bottom: 8rem;
 }
 
-.workouts {
+.orders {
   list-style: none;
   height: 77vh;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-.workouts::-webkit-scrollbar {
+.orders::-webkit-scrollbar {
   width: 0;
 }
 
-.workout {
+.order {
   background-color: var(--color-dark--2);
   border-radius: 5px;
   padding: 1.5rem 2.25rem;
@@ -83,36 +83,36 @@ a:visited {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.75rem 1.5rem;
 }
-.workout--running {
+.order--base {
   border-left: 5px solid var(--color-brand--2);
 }
-.workout--cycling {
+.order--order {
   border-left: 5px solid var(--color-brand--1);
 }
 
-.workout__title {
+.order_title {
   font-size: 1.7rem;
   font-weight: 600;
   grid-column: 1 / -1;
 }
 
-.workout__details {
+.order_details {
   display: flex;
   align-items: baseline;
 }
 
-.workout__icon {
+.order_icon {
   font-size: 1.8rem;
   margin-right: 0.2rem;
   height: 0.28rem;
 }
 
-.workout__value {
+.order_value {
   font-size: 1.5rem;
   margin-right: 0.5rem;
 }
 
-.workout__unit {
+.order_unit {
   font-size: 1.1rem;
   color: var(--color-light--1);
   text-transform: uppercase;
@@ -207,9 +207,9 @@ a:visited {
   background-color: var(--color-dark--1);
 }
 
-.running-popup .leaflet-popup-content-wrapper {
+.base-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--2);
 }
-.cycling-popup .leaflet-popup-content-wrapper {
+.order-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
 }

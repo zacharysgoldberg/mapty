@@ -20,9 +20,14 @@ async def order_page(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
 
 
+@router.post('/add-order')
+async def add_order(request: Request):
+    return
+
+
 # [Request to optimize path for orders/addresses]
-@router.get('/optimize-path')
-async def sort_order():
+@router.get('/find-path')
+async def find_path():
     # # [For CSV]
     # with open("api/routers/orders.csv", "r") as file:
     #     reader = csv.DictReader(file)
@@ -41,8 +46,8 @@ async def sort_order():
 # [Request to get the next order upon successful authorization]
 
 
-@router.get('/get-next-order/{pk}')
-async def get_next_order(request: Request, pk: str):
+@router.get('/next-order/{pk}')
+async def next_order(request: Request, pk: str):
     # user = await get_current_user(request)
     # if user is None:
     #     response = requests.post("http://localhost:8000/auth/token",

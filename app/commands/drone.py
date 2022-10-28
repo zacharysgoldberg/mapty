@@ -16,7 +16,7 @@ class Drone:
         self.current_coords = ()
         # self.access_token = True
         self.data = json.loads(requests.get(
-            "http://localhost:8000/orders/optimize-path").text)
+            "http://localhost:8000/orders/find-path").text)
         # [Optimal path id order]
         self.orders = [order for order in self.data['orders']]
         self.addresses = [address for address in self.data['addresses']]
@@ -40,7 +40,7 @@ class Drone:
 
             # if response.text != 'false':
             response = requests.get(
-                f"http://localhost:8000/orders/get-next-order/{order}")
+                f"http://localhost:8000/orders/next-order/{order}")
             address = json.loads(response.text)['address']
             status = json.loads(response.text)['status']
 
@@ -55,7 +55,6 @@ class Drone:
             # return
 
         print('No orders left. Returning to store...')
-        print('Current coordinates: -----', self.current_coords, '-----')
         self.current_coords = self.pizza_store
 
     # [Delivery logic]
