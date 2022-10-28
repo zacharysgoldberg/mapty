@@ -1,8 +1,14 @@
 'use strict';
 
 class Orders {
-  date = new Date();
-  id = (Date.now() + '').slice(-10);
+  today = new Date();
+  time =
+    this.today.getHours() +
+    ':' +
+    this.today.getMinutes() +
+    ':' +
+    this.today.getSeconds();
+  // id = (Date.now() + '').slice(-10);
   clicks = 0;
 
   constructor(coords) {
@@ -11,7 +17,7 @@ class Orders {
     // this.duration = duration; // min
   }
 
-  _setDescription() {
+  _setDescription(time) {
     // prettier-ignore
     const months = [
       'January', 
@@ -28,9 +34,9 @@ class Orders {
       'December'
     ];
 
-    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
-      months[this.date.getMonth()]
-    } ${this.date.getDate()}`;
+    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} at ${
+      this.time
+    }`;
   }
 
   click() {
@@ -47,7 +53,7 @@ class Base extends Orders {
     // min/km
     // this.maxRange = this.coords;
     // return this;
-    this._setDescription();
+    this._setDescription(this.time);
   }
 }
 
@@ -58,7 +64,7 @@ class Order extends Orders {
     super(coords);
     // this.elevationGain = elevationGain;
     // this.calcSpeed();
-    this._setDescription();
+    this._setDescription(this.time);
   }
 
   // calcSpeed() {
@@ -203,6 +209,7 @@ class App {
     // const distance = +inputDistance.value; // + converts to number:(Number())
     // const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
+
     let order;
 
     // If workout running, create running object
@@ -272,12 +279,14 @@ class App {
   // some DOM manipulation
   _renderOrder(order) {
     let html = `
+    <form
     <li class="order order--${order.type}" data-id="${order.id}">
       <h2 class="order__title">${order.description}</h2>
       <div class="order__details">
         <span class="order__icon">${
           order.type === 'base' ? '🏃‍♂️' : '🚴‍♀️'
-        }</span></div>`;
+        }</span></div>
+        <button onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>`;
 
     // if (order.type === 'base')
     //   html += `

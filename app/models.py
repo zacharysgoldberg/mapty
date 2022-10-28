@@ -12,17 +12,18 @@ class User(JsonModel):
         database = redis
 
 
-class Address(EmbeddedJsonModel):
-    address_line_1: str
-    address_line_2: Optional[str]
-    city: str = Field(index=True)
-    state: str = Field(index=True)
-    postal_code: str = Field(index=True)
+# class Address(EmbeddedJsonModel):
+#     address_line_1: str
+#     address_line_2: Optional[str]
+#     city: str = Field(index=True)
+#     state: str = Field(index=True)
+#     postal_code: str = Field(index=True)
 
 
 class Order(JsonModel):
     order_time: datetime
-    address: str = Field(index=True)
+    address: str
+    coords: dict = Field(index=True)
     status: str = Field(default='pending')  # pending, completed. refunded
 
     class Meta:

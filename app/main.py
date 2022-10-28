@@ -58,9 +58,9 @@ async def root(request: Request):
 
         return templates.TemplateResponse('index.html', {'request': request})
 
-    return RedirectResponse(url='/auth', status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(url='/orders', status_code=status.HTTP_302_FOUND)
 
 
 # [Connecting routers]
-app.include_router(auth.router)
+# app.include_router(auth.router)
 app.include_router(orders.router)

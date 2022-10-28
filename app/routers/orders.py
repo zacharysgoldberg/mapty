@@ -21,8 +21,14 @@ async def order_page(request: Request):
 
 
 @router.post('/add-order')
-async def add_order(request: Request):
-    return
+async def add_order(request: Request, order: Order):
+    order
+    return order.save()
+
+
+@router.delete('/delete-order/{pk}')
+async def delete_order(request: Request, pk: str):
+    return Order.delete(pk)
 
 
 # [Request to optimize path for orders/addresses]
