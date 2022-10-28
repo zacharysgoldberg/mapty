@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Form
 from .auth import get_current_user
+from fastapi.responses import HTMLResponse
 from models import Order
 import requests
 from commands.gps import coords_by_address, tsp_path
@@ -20,9 +21,12 @@ async def order_page(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
 
 
-@router.post('/add-order')
-async def add_order(request: Request, order: Order):
-    order
+@router.post('/add-order', response_class=HTMLResponse)
+async def add_order(request: Request):
+    order = Order(
+        order_time=request.time,
+        coords=request.coords,
+    )
     return order.save()
 
 
@@ -43,11 +47,12 @@ async def find_path():
     # [For redis]
     pks = Order.all_pks()
     orders = [order for order in pks]
-    addresses = [Order.get(pk).address for pk in orders]
-    coords = [coords_by_address(order) for order in addresses]
+    # addresses = [Order.get(pk).address for pk in orders]
+    # coords = [coords_by_address(order) for order in addresses]
+    coords = [Order.get(pk).coords for pk in orders]
     optimal_path = tsp_path(coords)
 
-    return {'orders': orders, 'addresses': addresses, 'path': optimal_path}
+    return {'orders': orders, 'path': optimal_path}
 
 # [Request to get the next order upon successful authorization]
 
