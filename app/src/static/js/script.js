@@ -213,7 +213,8 @@ class App {
     let order;
 
     // If workout running, create running object
-    if (type == 'Base') {
+
+    if (type == 'Base' && !this.#orders.some(e => e.type == 'base')) {
       // const cadence = +inputCadence.value;
 
       // // Check if data is valid
@@ -229,8 +230,13 @@ class App {
       order = new Base([lat, lng]);
     }
 
+    // Catch edge case in the event user tries to add another base
+    else if (type == 'Base' && this.#orders.some(e => e.type == 'base')) {
+      return alert('Only one Base may be submitted');
+    }
+
     // If workout is order, create order object
-    if (type == 'Order') {
+    else if (type == 'Order') {
       // const elevation = +inputElevation.value;
 
       // if (
