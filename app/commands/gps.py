@@ -37,13 +37,13 @@ def distance_matrix(coords):
 
 
 # [Helper function to calculate path distance]
-def TSP(path, dist):
+def tsp_path_helper(path, dist):
     return sum(dist[i][j] for i, j in zip(path, path[1:]))
 
 # [Finding optimal path for drone]
 
 
-def find_path(coords):
+def tsp_path(coords):
     dist_matrix = distance_matrix(coords)
     # Set of all nodes to visit
     to_visit = set(list(range(len(dist_matrix))))
@@ -61,13 +61,14 @@ def find_path(coords):
                 new_path = path + [node]
                 new_pos = (node, frozenset(new_path))
                 # Update if (current node, visited) is not in next state or we found shorter path
-                if new_pos not in next_state or TSP(new_path, dist_matrix) < TSP(next_state[new_pos], dist_matrix):
+                if new_pos not in next_state \
+                        or tsp_path_helper(new_path, dist_matrix) < tsp_path_helper(next_state[new_pos], dist_matrix):
                     next_state[new_pos] = new_path
 
         state = next_state
     # Find the shortest path and return to starting point
     shortest_path = min((path + [0] for path in state.values()))
-    dist = TSP(shortest_path, dist_matrix)
+    dist = tsp_path_helper(shortest_path, dist_matrix)
     return shortest_path, dist
 
 

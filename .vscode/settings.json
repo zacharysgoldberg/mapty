@@ -1,3 +1,6 @@
 {
-  "liveServer.settings.multiRootWorkspaceName": "starter"
+  "liveServer.settings.multiRootWorkspaceName": "starter",
+  "python.testing.pytestArgs": ["app"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
