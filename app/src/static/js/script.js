@@ -92,7 +92,7 @@ class App {
   #map;
   #mapZoomLevel = 13;
   #mapEvent;
-  #orders = [];
+  orders = [];
 
   constructor() {
     // Get user's position
@@ -118,9 +118,9 @@ class App {
   }
 
   _getBase() {
-    for (let i = 0; i < this.#orders.length; i++) {
-      if (this.#orders[i].type === 'base') {
-        return this.#orders[i].coords;
+    for (let i = 0; i < this.orders.length; i++) {
+      if (this.orders[i].type === 'base') {
+        return this.orders[i].coords;
       }
     }
   }
@@ -166,7 +166,7 @@ class App {
     // Handling clicks on map
     this.#map.on('click', this._showForm.bind(this));
 
-    this.#orders.forEach(order => {
+    this.orders.forEach(order => {
       this._renderOrderMarker(order);
     });
   }
@@ -214,7 +214,7 @@ class App {
 
     // If workout running, create running object
 
-    if (type == 'Base' && !this.#orders.some(e => e.type == 'base')) {
+    if (type == 'Base' && !this.orders.some(e => e.type == 'base')) {
       // const cadence = +inputCadence.value;
 
       // // Check if data is valid
@@ -231,7 +231,7 @@ class App {
     }
 
     // Catch edge case in the event user tries to add another base
-    else if (type == 'Base' && this.#orders.some(e => e.type == 'base')) {
+    else if (type == 'Base' && this.orders.some(e => e.type == 'base')) {
       return alert('Only one Base may be submitted');
     }
 
@@ -249,7 +249,7 @@ class App {
     }
 
     // Add new object to order array
-    this.#orders.push(order);
+    this.orders.push(order);
 
     // Render order on map as marker
     this._renderOrderMarker(order);
@@ -260,6 +260,7 @@ class App {
     // Hide form + Clear input fields
     this._hideForm();
 
+    this._setRedisStorage();
     // Set local storage to all orders
     this._setLocalStorage();
   }
@@ -294,35 +295,6 @@ class App {
         }</span></div>
         <button onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>`;
 
-    // if (order.type === 'base')
-    //   html += `
-    //     <div class="order__details">
-    //         <span class="order__icon">⚡️</span>
-    //         <span class="order__value">${order.pace.toFixed(1)}</span>
-    //         <span class="order__unit">min/km</span>
-    //       </div>
-    //       <div class="order__details">
-    //         <span class="order__icon">🦶🏼</span>
-    //         <span class="order__value">${order.cadence}</span>
-    //         <span class="order__unit">spm</span>
-    //       </div>
-    //       </li>`;
-
-    // if (order.type === 'order')
-    //   html += `
-    //     <div class="order__details">
-    //         <span class="order__icon">⚡️</span>
-    //         <span class="order__value">${order.speed.toFixed(1)}</span>
-    //         <span class="order__unit">km/h</span>
-    //       </div>
-    //       <div class="order__details">
-    //         <span class="order__icon">⛰</span>
-    //         <span class="order__value">${order.elevationGain}</span>
-    //         <span class="order__unit">m</span>
-    //       </div>
-    //       </li>
-    // `;
-
     form.insertAdjacentHTML('afterend', html);
   }
 
@@ -330,7 +302,7 @@ class App {
     const orderEl = e.target.closest('.order');
     if (!orderEl) return;
 
-    const order = this.#orders.find(order => order.id == orderEl.dataset.id);
+    const order = this.orders.find(order => order.id == orderEl.dataset.id);
 
     this.#map.setView(order.coords, this.#mapZoomLevel, {
       animate: true,
@@ -343,8 +315,13 @@ class App {
     // order.click();
   }
 
+  _setRedisStorage() {
+    console.log(this.orders);
+    $('.hiddenField').val(JSON.stringify(this.orders));
+  }
+
   _setLocalStorage() {
-    localStorage.setItem('orders', JSON.stringify(this.#orders));
+    localStorage.setItem('orders', JSON.stringify(this.orders));
   }
 
   _getLocalStorage() {
@@ -352,9 +329,9 @@ class App {
 
     if (!data) return;
 
-    this.#orders = data;
+    this.orders = data;
 
-    this.#orders.forEach(order => {
+    this.orders.forEach(order => {
       this._renderOrder(order);
     });
   }
@@ -370,8 +347,8 @@ class App {
 
   // Sort orders
   // sortOrders() {
-  //   this.#orders.sort((a, b) => b.distance - a.distance);
-  //   console.log(this.#orders);
+  //   this.orders.sort((a, b) => b.distance - a.distance);
+  //   console.log(this.orders);
   // }
 
   // Edit a order

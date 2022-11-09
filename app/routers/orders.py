@@ -6,6 +6,8 @@ import requests
 from commands.gps import coords_by_address, tsp_path
 import csv
 from . import templates
+import json
+import logging
 # import pandas as pd
 
 
@@ -22,12 +24,13 @@ async def order_page(request: Request):
 
 
 @router.post('/add-order', response_class=HTMLResponse)
-async def add_order(request: Request):
-    order = Order(
-        order_time=request.time,
-        coords=request.coords,
-    )
-    return order.save()
+async def add_order(request: Request, orders: list = Form()):
+    logging.warning(orders)
+    # order = Order(
+    #     order_time=request.time,
+    #     coords=request.coords,
+    # )
+    # return order.save()
 
 
 @router.delete('/delete-order/{pk}')
