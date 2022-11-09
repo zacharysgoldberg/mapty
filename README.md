@@ -4,4 +4,4 @@ Pizza Drone that uses user geolocation data to display selected delivery route o
 
 ## Algorithmic challenge
 
-To calculate the optimal path for the drone to follow and return to store required a custom variation of the Traveling Salesman Problem.
+Calculating the optimal path required a custom variation of the [Held–Karp algorithm](https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm) to solve the Traveling Salesman Problem.
