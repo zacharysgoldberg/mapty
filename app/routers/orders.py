@@ -25,14 +25,15 @@ async def order_page(request: Request):
 
 @router.post('/add-order', response_model=Orders)
 async def add_order(request: Request, orders: Orders):
-    # for order in orders:
-    #     new_order = Order(
-    #         order_date=order.date[:10]
-    #         order_time=order.time,
-    #         coords=order.coords,
-    #     )
-    #     new_order.save()
-    print(orders.orders[0].date[:10])
+    print(orders)
+    for order in orders.orders:
+        new_order = Order(
+            input_type=order.inputType,
+            order_date=order.date[:10],
+            order_time=order.time,
+            coords=order.coords,
+        )
+        new_order.save()
     return orders
 
 

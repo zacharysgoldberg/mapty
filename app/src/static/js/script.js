@@ -34,7 +34,7 @@ class Orders {
       'December'
     ];
 
-    this.description = `${this._type[0].toUpperCase()}${this._type.slice(
+    this.description = `${this.inputType[0].toUpperCase()}${this.inputType.slice(
       1
     )} at ${this.time}`;
   }
@@ -45,7 +45,7 @@ class Orders {
 }
 
 class Base extends Orders {
-  _type = 'base';
+  inputType = 'base';
 
   constructor(coords) {
     super(coords);
@@ -58,7 +58,7 @@ class Base extends Orders {
 }
 
 class Order extends Orders {
-  _type = 'order';
+  inputType = 'order';
 
   constructor(coords) {
     super(coords);
@@ -82,7 +82,7 @@ class Order extends Orders {
 // APPLICATION ARCHITECTURE
 const form = document.querySelector('.form');
 const containerOrders = document.querySelector('.orders');
-const inputType = document.querySelector('.form__input--type');
+const input = document.querySelector('.form__input--type');
 const submitOrders = document.querySelector('.form__input');
 // const inputDistance = document.querySelector('.form__input--distance');
 // const inputDuration = document.querySelector('.form__input--duration');
@@ -104,7 +104,7 @@ class App {
 
     // Attach event handlers
     form.addEventListener('submit', this._newOrder.bind(this)); // must always bind this keyword when calling local methods/functions inside of classes
-    inputType.addEventListener('change', this._calcMaxRange.bind(this));
+    input.addEventListener('change', this._calcMaxRange.bind(this));
     containerOrders.addEventListener('submit', this._moveToPopup.bind(this));
     // submitOrders.addEventListener('click', this._setRedisStorage.bind(this));
     this._setRedisStorage(this.orders);
@@ -122,12 +122,12 @@ class App {
 
   _getBase() {
     for (let i = 0; i < this.orders.length; i++) {
-      if (this.orders[i]._type === 'base') {
+      if (this.orders[i].inputType === 'base') {
         return this.orders[i].coords;
       }
     }
   }
-
+  // To calculate max range for orders from base location
   _calcMaxRange(coords1, coords2) {
     coords1 = this.#mapEvent.latlng;
     coords2 = this._getBase();
@@ -191,7 +191,7 @@ class App {
   _showForm(mapE) {
     this.#mapEvent = mapE;
     form.classList.remove('hidden');
-    // inputType.focus();
+    // input.focus();
     // inputDistance.focus();
   }
 
@@ -222,7 +222,7 @@ class App {
     // console.log(this);
 
     // Get data from form
-    const _type = inputType.value;
+    const inputType = input.value;
     // const distance = +inputDistance.value; // + converts to number:(Number())
     // const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
@@ -231,7 +231,7 @@ class App {
 
     // If workout running, create running object
 
-    if (_type == 'Base' && !this.orders.some(e => e._type == 'base')) {
+    if (inputType == 'Base' && !this.orders.some(e => e.inputType == 'base')) {
       // const cadence = +inputCadence.value;
 
       // // Check if data is valid
@@ -248,12 +248,15 @@ class App {
     }
 
     // Catch edge case in the event user tries to add another base
-    else if (_type == 'Base' && this.orders.some(e => e._type == 'base')) {
+    else if (
+      inputType == 'Base' &&
+      this.orders.some(e => e.inputType == 'base')
+    ) {
       return alert('Only one Base may be submitted');
     }
 
     // If workout is order, create order object
-    else if (_type == 'Order') {
+    else if (inputType == 'Order') {
       // const elevation = +inputElevation.value;
 
       // if (
@@ -290,11 +293,11 @@ class App {
           minWidth: 100,
           autoClose: false,
           closeOnClick: false,
-          className: `${order._type}-popup`,
+          className: `${order.inputType}-popup`,
         })
       )
       .setPopupContent(
-        `${order._type === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.description}`
+        `${order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.description}`
       )
       .openPopup();
   }
@@ -303,11 +306,11 @@ class App {
   _renderOrder(order) {
     let html = `
     <form
-    <li class="order order--${order._type}" data-id="${order.id}">
+    <li class="order order--${order.inputType}" data-id="${order.id}">
       <h2 class="order__title">${order.description}</h2>
       <div class="order__details">
         <span class="order__icon">${
-          order._type === 'base' ? '🏃‍♂️' : '🚴‍♀️'
+          order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'
         }</span></div>
         <button onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>`;
 

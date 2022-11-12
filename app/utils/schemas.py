@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import Request
 from pydantic import BaseModel
+# from datetime import datetime, date
 
 
 class LoginForm:
@@ -16,10 +17,10 @@ class LoginForm:
 
 
 class OrderBase(BaseModel):
-    coords: list[float, float]
+    inputType: str
     date: str
     time: str
-    _type: str
+    coords: list[float, float]
 
 
 class Orders(BaseModel):

@@ -21,11 +21,12 @@ class User(JsonModel):
 
 
 class Order(JsonModel):
-    order_date: date
-    order_time: datetime
+    input_type: str
+    order_date: str
+    order_time: str
     address: Optional[str]
-    coords: dict = Field(index=True)
-    status: str = Field(default='pending')  # pending, completed. refunded
+    coords: list = Field(index=True)
+    status: str = Field(default='pending')  # pending, completed, refunded
 
     class Meta:
         database = redis
