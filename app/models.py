@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from database import redis
 from redis_om import Field, EmbeddedJsonModel, JsonModel, Migrator
 from typing import Optional
@@ -21,8 +21,9 @@ class User(JsonModel):
 
 
 class Order(JsonModel):
+    order_date: date
     order_time: datetime
-    address: str
+    address: Optional[str]
     coords: dict = Field(index=True)
     status: str = Field(default='pending')  # pending, completed. refunded
 

@@ -16,4 +16,11 @@ class LoginForm:
 
 
 class OrderBase(BaseModel):
-    orders: dict
+    coords: list[float, float]
+    date: str
+    time: str
+    _type: str
+
+
+class Orders(BaseModel):
+    orders: list[OrderBase] = ...

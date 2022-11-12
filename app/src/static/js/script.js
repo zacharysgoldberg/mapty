@@ -1,13 +1,13 @@
 'use strict';
 
 class Orders {
-  today = new Date();
+  date = new Date();
   time =
-    this.today.getHours() +
+    this.date.getHours() +
     ':' +
-    this.today.getMinutes() +
+    this.date.getMinutes() +
     ':' +
-    this.today.getSeconds();
+    this.date.getSeconds();
   // id = (Date.now() + '').slice(-10);
   clicks = 0;
 
@@ -34,9 +34,9 @@ class Orders {
       'December'
     ];
 
-    this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} at ${
-      this.time
-    }`;
+    this.description = `${this._type[0].toUpperCase()}${this._type.slice(
+      1
+    )} at ${this.time}`;
   }
 
   click() {
@@ -45,7 +45,7 @@ class Orders {
 }
 
 class Base extends Orders {
-  type = 'base';
+  _type = 'base';
 
   constructor(coords) {
     super(coords);
@@ -53,18 +53,18 @@ class Base extends Orders {
     // min/km
     // this.maxRange = this.coords;
     // return this;
-    this._setDescription(this.time);
+    // this._setDescription(this.time);
   }
 }
 
 class Order extends Orders {
-  type = 'order';
+  _type = 'order';
 
   constructor(coords) {
     super(coords);
     // this.elevationGain = elevationGain;
     // this.calcSpeed();
-    this._setDescription(this.time);
+    // this._setDescription(this.time);
   }
 
   // calcSpeed() {
@@ -107,7 +107,7 @@ class App {
     inputType.addEventListener('change', this._calcMaxRange.bind(this));
     containerOrders.addEventListener('submit', this._moveToPopup.bind(this));
     // submitOrders.addEventListener('click', this._setRedisStorage.bind(this));
-    this._setRedisStorage();
+    this._setRedisStorage(this.orders);
   }
 
   _getPosition() {
@@ -122,7 +122,7 @@ class App {
 
   _getBase() {
     for (let i = 0; i < this.orders.length; i++) {
-      if (this.orders[i].type === 'base') {
+      if (this.orders[i]._type === 'base') {
         return this.orders[i].coords;
       }
     }
@@ -150,20 +150,18 @@ class App {
     return deg * (Math.PI / 180);
   }
 
-  _setRedisStorage() {
-    console.log(this.orders);
+  _setRedisStorage(orders) {
     $('#add_button').click(function () {
+      console.log(orders);
       $.ajax({
         url: '/orders/add-order',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
-        data: JSON.stringify({
-          orders: this.orders,
-        }),
+        data: JSON.stringify({ orders: orders }),
       });
+      // $('.hiddenField').val(JSON.stringify(this.orders));
     });
-    // $('.hiddenField').val(JSON.stringify(this.orders));
   }
 
   _loadMap(position) {
@@ -224,7 +222,7 @@ class App {
     // console.log(this);
 
     // Get data from form
-    const type = inputType.value;
+    const _type = inputType.value;
     // const distance = +inputDistance.value; // + converts to number:(Number())
     // const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
@@ -233,7 +231,7 @@ class App {
 
     // If workout running, create running object
 
-    if (type == 'Base' && !this.orders.some(e => e.type == 'base')) {
+    if (_type == 'Base' && !this.orders.some(e => e._type == 'base')) {
       // const cadence = +inputCadence.value;
 
       // // Check if data is valid
@@ -250,12 +248,12 @@ class App {
     }
 
     // Catch edge case in the event user tries to add another base
-    else if (type == 'Base' && this.orders.some(e => e.type == 'base')) {
+    else if (_type == 'Base' && this.orders.some(e => e._type == 'base')) {
       return alert('Only one Base may be submitted');
     }
 
     // If workout is order, create order object
-    else if (type == 'Order') {
+    else if (_type == 'Order') {
       // const elevation = +inputElevation.value;
 
       // if (
@@ -292,11 +290,11 @@ class App {
           minWidth: 100,
           autoClose: false,
           closeOnClick: false,
-          className: `${order.type}-popup`,
+          className: `${order._type}-popup`,
         })
       )
       .setPopupContent(
-        `${order.type === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.description}`
+        `${order._type === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.description}`
       )
       .openPopup();
   }
@@ -305,11 +303,11 @@ class App {
   _renderOrder(order) {
     let html = `
     <form
-    <li class="order order--${order.type}" data-id="${order.id}">
+    <li class="order order--${order._type}" data-id="${order.id}">
       <h2 class="order__title">${order.description}</h2>
       <div class="order__details">
         <span class="order__icon">${
-          order.type === 'base' ? '🏃‍♂️' : '🚴‍♀️'
+          order._type === 'base' ? '🏃‍♂️' : '🚴‍♀️'
         }</span></div>
         <button onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>`;
 

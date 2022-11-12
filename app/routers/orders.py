@@ -2,13 +2,12 @@ from fastapi import APIRouter, Request, Depends, Form
 from .auth import get_current_user
 from fastapi.responses import HTMLResponse
 from models import Order
-from utils.schemas import OrderBase
+from utils.schemas import OrderBase, Orders
 import requests
 from commands.gps import coords_by_address, tsp_path
 import csv
 from . import templates
 import json
-import logging
 # import pandas as pd
 
 
@@ -24,14 +23,17 @@ async def order_page(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
 
 
-@router.post('/add-order', response_class=HTMLResponse)
-async def add_order(request: Request, orders: OrderBase):
-    logging.warning(orders)
-    # order = Order(
-    #     order_time=request.time,
-    #     coords=request.coords,
-    # )
-    # return order.save()
+@router.post('/add-order', response_model=Orders)
+async def add_order(request: Request, orders: Orders):
+    # for order in orders:
+    #     new_order = Order(
+    #         order_date=order.date[:10]
+    #         order_time=order.time,
+    #         coords=order.coords,
+    #     )
+    #     new_order.save()
+    print(orders.orders[0].date[:10])
+    return orders
 
 
 @router.delete('/delete-order/{pk}')
