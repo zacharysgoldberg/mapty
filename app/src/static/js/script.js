@@ -83,6 +83,7 @@ class Order extends Orders {
 const form = document.querySelector('.form');
 const containerOrders = document.querySelector('.orders');
 const inputType = document.querySelector('.form__input--type');
+const submitOrders = document.querySelector('.form__input');
 // const inputDistance = document.querySelector('.form__input--distance');
 // const inputDuration = document.querySelector('.form__input--duration');
 // const inputCadence = document.querySelector('.form__input--cadence');
@@ -104,7 +105,9 @@ class App {
     // Attach event handlers
     form.addEventListener('submit', this._newOrder.bind(this)); // must always bind this keyword when calling local methods/functions inside of classes
     inputType.addEventListener('change', this._calcMaxRange.bind(this));
-    containerOrders.addEventListener('click', this._moveToPopup.bind(this));
+    containerOrders.addEventListener('submit', this._moveToPopup.bind(this));
+    // submitOrders.addEventListener('click', this._setRedisStorage.bind(this));
+    this._setRedisStorage();
   }
 
   _getPosition() {
@@ -145,6 +148,22 @@ class App {
 
   deg2rad(deg) {
     return deg * (Math.PI / 180);
+  }
+
+  _setRedisStorage() {
+    console.log(this.orders);
+    $('#add_button').click(function () {
+      $.ajax({
+        url: '/orders/add-order',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          orders: this.orders,
+        }),
+      });
+    });
+    // $('.hiddenField').val(JSON.stringify(this.orders));
   }
 
   _loadMap(position) {
@@ -260,7 +279,6 @@ class App {
     // Hide form + Clear input fields
     this._hideForm();
 
-    this._setRedisStorage();
     // Set local storage to all orders
     this._setLocalStorage();
   }
@@ -313,11 +331,6 @@ class App {
 
     // using the public interface
     // order.click();
-  }
-
-  _setRedisStorage() {
-    console.log(this.orders);
-    $('.hiddenField').val(JSON.stringify(this.orders));
   }
 
   _setLocalStorage() {

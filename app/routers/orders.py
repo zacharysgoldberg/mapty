@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Depends, Form
 from .auth import get_current_user
 from fastapi.responses import HTMLResponse
 from models import Order
+from utils.schemas import OrderBase
 import requests
 from commands.gps import coords_by_address, tsp_path
 import csv
@@ -24,7 +25,7 @@ async def order_page(request: Request):
 
 
 @router.post('/add-order', response_class=HTMLResponse)
-async def add_order(request: Request, orders: list = Form()):
+async def add_order(request: Request, orders: OrderBase):
     logging.warning(orders)
     # order = Order(
     #     order_time=request.time,

@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import Request
+from pydantic import BaseModel
 
 
 class LoginForm:
@@ -12,3 +13,7 @@ class LoginForm:
         form = await self.request.form()
         self.username = form.get('email')
         self.password = form.get('password')
+
+
+class OrderBase(BaseModel):
+    orders: dict
