@@ -25,25 +25,28 @@ async def order_page(request: Request):
 
 @router.post('/add-order', response_model=Orders)
 async def add_order(request: Request, orders: Orders):
-    print(orders)
+    # print(orders)
     for order in orders.orders:
-        new_order = Order(
-            input_type=order.inputType,
-            order_date=order.date[:10],
-            order_time=order.time,
-            coords=order.coords,
-        )
-        new_order.save()
+        order_found = Order.find(Order.coords << order.coords).all()
+        if not order_found:
+            new_order = Order(
+                input_type=order.inputType,
+                order_date=order.date[:10],
+                order_time=order.time,
+                coords=order.coords,
+            )
+            new_order.save()
+
     return orders
 
 
-@router.delete('/delete-order/{pk}')
+@ router.delete('/delete-order/{pk}', response_class=HTMLResponse)
 async def delete_order(request: Request, pk: str):
     return Order.delete(pk)
 
 
 # [Request to optimize path for orders/addresses]
-@router.get('/find-path')
+@ router.get('/find-path')
 async def find_path():
     # # [For CSV]
     # with open("api/routers/orders.csv", "r") as file:
@@ -64,7 +67,7 @@ async def find_path():
 # [Request to get the next order upon successful authorization]
 
 
-@router.get('/next-order/{pk}')
+@ router.get('/next-order/{pk}')
 async def next_order(request: Request, pk: str):
     # user = await get_current_user(request)
     # if user is None:
@@ -82,7 +85,7 @@ async def next_order(request: Request, pk: str):
 # [To update order delivery to True]
 
 
-@router.post('/deliver-order/{pk}')
+@ router.post('/deliver-order/{pk}')
 async def deliver_order(request: Request, pk: str):
     # user = await get_current_user(request)
     # if user is None:

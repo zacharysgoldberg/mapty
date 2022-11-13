@@ -20,7 +20,7 @@ class OrderBase(BaseModel):
     inputType: str
     date: str
     time: str
-    coords: list[float, float]
+    coords: list
 
 
 class Orders(BaseModel):

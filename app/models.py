@@ -25,7 +25,7 @@ class Order(JsonModel):
     order_date: str
     order_time: str
     address: Optional[str]
-    coords: list = Field(index=True)
+    coords: list[str] = Field(index=True)
     status: str = Field(default='pending')  # pending, completed, refunded
 
     class Meta:

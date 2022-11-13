@@ -244,7 +244,7 @@ class App {
       // )
       //   return alert('Inputs have to be positive numbers');
 
-      order = new Base([lat, lng]);
+      order = new Base([lat.toString(), lng.toString()]);
     }
 
     // Catch edge case in the event user tries to add another base
@@ -265,7 +265,7 @@ class App {
       // )
       //   return alert('Inputs have to be positive numbers');
 
-      order = new Order([lat, lng]);
+      order = new Order([lat.toString(), lng.toString()]);
     }
 
     // Add new object to order array
@@ -305,14 +305,15 @@ class App {
   // some DOM manipulation
   _renderOrder(order) {
     let html = `
-    <form
+    <form method="POST">
     <li class="order order--${order.inputType}" data-id="${order.id}">
-      <h2 class="order__title">${order.description}</h2>
-      <div class="order__details">
-        <span class="order__icon">${
-          order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'
-        }</span></div>
-        <button onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>`;
+    <h2 class="order__title">${order.description}</h2>
+    <div class="order__details">
+    <span class="order__icon">${
+      order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'
+    }</span></div>
+    <button id="delete_button" onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>
+    </form>`;
 
     form.insertAdjacentHTML('afterend', html);
   }
