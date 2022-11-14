@@ -382,7 +382,14 @@ class App {
 
   // Reset
   reset() {
-    localStorage.removeItem('orders');
+    $('#reset_button').click(function () {
+      $.ajax({
+        url: '/orders/add-delete-orders',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+      });
+    });
     location.reload();
   }
 

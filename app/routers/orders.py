@@ -36,13 +36,16 @@ async def add_order(request: Request, orders: Orders):
                 coords=order.coords,
             )
             new_order.save()
+            new_order.expire(120)
 
     return orders
 
 
-@ router.delete('/delete-order/{pk}', response_class=HTMLResponse)
+@ router.delete('/delete-orders/{pk}', response_class=HTMLResponse)
 async def delete_order(request: Request, pk: str):
-    return Order.delete(pk)
+    pks = Order.all_pks()
+    Order.delete(pk)
+    return
 
 
 # [Request to optimize path for orders/addresses]
