@@ -8,7 +8,7 @@ class Orders {
     this.date.getMinutes() +
     ':' +
     this.date.getSeconds();
-  // id = (Date.now() + '').slice(-10);
+  id = this.date.toISOString().slice(-4, this.date.length);
   clicks = 0;
 
   constructor(coords) {
@@ -62,8 +62,6 @@ class Order extends Orders {
 
   constructor(coords) {
     super(coords);
-    // this.elevationGain = elevationGain;
-    // this.calcSpeed();
     // this._setDescription(this.time);
   }
 
@@ -83,11 +81,7 @@ class Order extends Orders {
 const form = document.querySelector('.form');
 const containerOrders = document.querySelector('.orders');
 const input = document.querySelector('.form__input--type');
-const submitOrders = document.querySelector('.form__input');
-// const inputDistance = document.querySelector('.form__input--distance');
-// const inputDuration = document.querySelector('.form__input--duration');
-// const inputCadence = document.querySelector('.form__input--cadence');
-// const inputElevation = document.querySelector('.form__input--elevation');
+// const submitOrders = document.querySelector('.form__input');
 
 class App {
   #map;
@@ -100,13 +94,12 @@ class App {
     this._getPosition();
 
     // Get data from local storage
-    this._getLocalStorage();
+    // this._getLocalStorage();
 
     // Attach event handlers
     form.addEventListener('submit', this._newOrder.bind(this)); // must always bind this keyword when calling local methods/functions inside of classes
     input.addEventListener('change', this._calcMaxRange.bind(this));
     containerOrders.addEventListener('submit', this._moveToPopup.bind(this));
-    // submitOrders.addEventListener('click', this._setRedisStorage.bind(this));
     this._setRedisStorage(this.orders);
   }
 
@@ -160,7 +153,6 @@ class App {
         contentType: 'application/json',
         data: JSON.stringify({ orders: orders }),
       });
-      // $('.hiddenField').val(JSON.stringify(this.orders));
     });
   }
 
@@ -280,12 +272,22 @@ class App {
     // Hide form + Clear input fields
     this._hideForm();
 
+    this._removeOrder(order, this.orders);
+
     // Set local storage to all orders
-    this._setLocalStorage();
+    // this._setLocalStorage();
   }
 
   _renderOrderMarker(order) {
-    L.marker(order.coords)
+    const myIcon = L.icon({
+      iconUrl: 'https://img.icons8.com/pastel-glyph/512/pizza--v2.png',
+      iconSize: [46, 46],
+      iconAnchor: [22, 94],
+      popupAnchor: [0, -90],
+      className: `${order.id}`,
+    });
+
+    L.marker(order.coords, { icon: myIcon })
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -293,11 +295,11 @@ class App {
           minWidth: 100,
           autoClose: false,
           closeOnClick: false,
-          className: `${order.inputType}-popup`,
+          className: `${order.inputType}-popup ${order.id}`,
         })
       )
       .setPopupContent(
-        `${order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.description}`
+        `${order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'} ${order.inputType}`
       )
       .openPopup();
   }
@@ -305,23 +307,50 @@ class App {
   // some DOM manipulation
   _renderOrder(order) {
     let html = `
-    <form method="POST">
-    <li class="order order--${order.inputType}" data-id="${order.id}">
-    <h2 class="order__title">${order.description}</h2>
+    <li id="${order.id}" class="order order--${order.inputType}" data-id="${
+      order.id
+    }">
+    <h2 class="order__title">${order.inputType}</h2>
     <div class="order__details">
-    <span class="order__icon">${
-      order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'
-    }</span></div>
-    <button id="delete_button" onclick="window.location.href='/orders/delete-order/{{order.pk}}'" type="button">Delete</button>
-    </form>`;
-
+    <span class="order__icon">${order.inputType === 'base' ? '🏃‍♂️' : '🚴‍♀️'}</span>
+    </div>
+    <button id="delete_button" type="submit">Remove</button>
+    </li>
+    `;
+    // onclick="window.location.href='/orders/delete-order/{{order.pk}}'"
     form.insertAdjacentHTML('afterend', html);
+  }
+
+  // Delete an order
+  _removeOrder(order, orders) {
+    $('#delete_button').click(function () {
+      const orderEl = document.getElementById(`${order.id}`);
+      const popups = [...document.querySelectorAll('.leaflet-popup')];
+      const markers = [...document.querySelectorAll('.leaflet-marker-icon')];
+
+      const popup = popups.find(
+        pop =>
+          `leaflet-popup ${order.inputType}-popup ${order.id} leaflet-zoom-animated` ===
+          pop.className
+      );
+      const marker = markers.find(
+        mark =>
+          mark.className ===
+          `leaflet-marker-icon ${order.id} leaflet-zoom-animated leaflet-interactive`
+      );
+      // console.log(popup);
+      // console.log(marker);
+      orderEl.style.display = 'none';
+      popup.style.display = 'none';
+      marker.style.display = 'none';
+      const index = orders.indexOf(order);
+      orders.splice(index, 1);
+    });
   }
 
   _moveToPopup(e) {
     const orderEl = e.target.closest('.order');
     if (!orderEl) return;
-
     const order = this.orders.find(order => order.id == orderEl.dataset.id);
 
     this.#map.setView(order.coords, this.#mapZoomLevel, {
@@ -356,9 +385,6 @@ class App {
     localStorage.removeItem('orders');
     location.reload();
   }
-
-  // Delete a order
-  removeOrder() {}
 
   // Sort orders
   // sortOrders() {
