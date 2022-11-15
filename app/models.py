@@ -21,10 +21,11 @@ class User(JsonModel):
 
 
 class Order(JsonModel):
+    id: str = Field(index=True)
     input_type: str
     order_date: str
     order_time: str
-    address: Optional[str]
+    # address: Optional[str]
     coords: list[str] = Field(index=True)
     status: str = Field(default='pending')  # pending, completed, refunded
 

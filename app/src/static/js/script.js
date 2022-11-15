@@ -64,17 +64,7 @@ class Order extends Orders {
     super(coords);
     // this._setDescription(this.time);
   }
-
-  // calcSpeed() {
-  //   // km/h
-  //   this.speed = this.distance / (this.duration / 60);
-  //   return this;
-  // }
 }
-
-// const run1 = new Running([39, -12], 5.2, 24, 178);
-// const cycling1 = new Cycling([39, -12], 27, 95, 523);
-// console.log(run1, cycling1);
 
 ///////////////////////////////////////////
 // APPLICATION ARCHITECTURE
@@ -147,7 +137,7 @@ class App {
     $('#add_button').click(function () {
       console.log(orders);
       $.ajax({
-        url: '/orders/add-order',
+        url: '/orders/find-path',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
@@ -206,37 +196,19 @@ class App {
   // }
 
   _newOrder(e) {
-    // const validInputs = (...inputs) =>
-    //   inputs.every(inp => Number.isFinite(inp));
-    // const allPositive = (...inputs) => inputs.every(inp => inp > 0);
-
     e.preventDefault();
     // console.log(this);
 
     // Get data from form
     const inputType = input.value;
-    // const distance = +inputDistance.value; // + converts to number:(Number())
-    // const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
 
     let order;
 
-    // If workout running, create running object
-
     if (inputType == 'Base' && !this.orders.some(e => e.inputType == 'base')) {
       // const cadence = +inputCadence.value;
 
-      // // Check if data is valid
-      // if (
-      //   // !Number.isFinite(distance) ||
-      //   // !Number.isFinite(duration) ||
-      //   // !Number.isFinite(cadence)
-      //   !validInputs(distance, duration, cadence) ||
-      //   !allPositive(distance, duration, cadence)
-      // )
-      //   return alert('Inputs have to be positive numbers');
-
-      order = new Base([lat.toString(), lng.toString()]);
+      order = new Base([lat, lng]);
     }
 
     // Catch edge case in the event user tries to add another base
@@ -257,7 +229,7 @@ class App {
       // )
       //   return alert('Inputs have to be positive numbers');
 
-      order = new Order([lat.toString(), lng.toString()]);
+      order = new Order([lat, lng]);
     }
 
     // Add new object to order array
@@ -380,26 +352,9 @@ class App {
     });
   }
 
-  // Reset
   reset() {
-    $('#reset_button').click(function () {
-      $.ajax({
-        url: '/orders/add-delete-orders',
-        type: 'post',
-        dataType: 'json',
-        contentType: 'application/json',
-      });
-    });
     location.reload();
   }
-
-  // Sort orders
-  // sortOrders() {
-  //   this.orders.sort((a, b) => b.distance - a.distance);
-  //   console.log(this.orders);
-  // }
-
-  // Edit a order
 }
 
 const app = new App();

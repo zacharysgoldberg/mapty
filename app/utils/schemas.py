@@ -17,6 +17,7 @@ class LoginForm:
 
 
 class OrderBase(BaseModel):
+    id: str
     inputType: str
     date: str
     time: str
