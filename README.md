@@ -1,11 +1,12 @@
 # Pizza Drone
 
-Pizza Drone that uses user geolocation data to display selected delivery route on GPS map. Implemented JQuery/AJAX for fetching location data to FastAPI routes.
+Pizza Drone that uses user geolocation data to display selected delivery route on GPS map. Implemented JQuery/AJAX for fetching location data to FastAPI routes and temporarily stored in Redis database using Redis-OM.
+
 **Frontend in-progress**
 
 ## Features
 
-* OpenStreetMap API
+* Implemented OpenStreetMap API
 * Path finding animation
 
 ## Algorithmic challenge
