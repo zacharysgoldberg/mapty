@@ -3,7 +3,7 @@ import json
 
 
 def test_optimize_path():
-    response = client.get('/orders/optimize_path')
+    response = client.get('/orders')
 
     assert type(json.loads(response.text)) is dict
     # assert type(json.loads(response.text)['orders']) is list

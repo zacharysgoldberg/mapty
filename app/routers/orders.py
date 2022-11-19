@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Request, Depends, Form
-from .auth import get_current_user
 from fastapi.responses import HTMLResponse
 from models import Order
 from utils.schemas import OrderBase, Orders
@@ -25,7 +24,7 @@ async def order_page(request: Request):
 # TODO: [Request to optimize path for orders/addresses]
 
 
-@router.post('/find-path', response_model=Orders)
+@router.post('/find-path', response_class=HTMLResponse)
 async def add_order(request: Request, orders: Orders):
     for order in orders.orders:
         # order_found = Order.find(Order.coords << order.coords).all()
@@ -53,9 +52,9 @@ async def add_order(request: Request, orders: Orders):
     # addresses = [Order.get(pk).address for pk in orders]
     # coords = [coords_by_address(order) for order in addresses]
     coords = [list(map(float, Order.get(pk).coords)) for pk in orders]
-    optimal_path = tsp_path(coords)
+    optimal_path, dist = tsp_path(coords)
 
-    return {'orders': orders, 'path': optimal_path}
+    return {'orders': orders, 'path': (optimal_path, dist)}
 
 
 @ router.delete('/delete-orders', response_class=HTMLResponse)
