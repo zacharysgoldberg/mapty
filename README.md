@@ -1,8 +1,13 @@
 # Pizza Drone
 
-Pizza Drone that uses user geolocation data to display selected delivery route on OpenStreetMap API. Implemented JQuery/AJAX for fetching data to FastAPI routes. Frontend in-progress.
+Pizza Drone simulator that uses user geolocation data input to display optimal path for delivery. Implemented JQuery/AJAX for fetching location data to Flask API and temporarily storing it in Redis database using Redis-OM.
 
-Algorithmic challenge
+**Frontend in-progress**
+
+## Features
+
+* Implemented OpenStreetMap API
+* Path finding animation
 
 ## Algorithmic challenge
 
