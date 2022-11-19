@@ -1,6 +1,6 @@
 # Pizza Drone
 
-Pizza Drone simulator that uses user geolocation data input to display optimal path for delivery. Implemented JQuery/AJAX for fetching location data to FastAPI routes and temporarily storing it in Redis database using Redis-OM.
+Pizza Drone simulator that uses user geolocation data input to display optimal path for delivery. Implemented JQuery/AJAX for fetching location data to Flask API and temporarily storing it in Redis database using Redis-OM.
 
 **Frontend in-progress**
 
