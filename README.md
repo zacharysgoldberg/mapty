@@ -1,6 +1,6 @@
 # Pizza Drone
 
-Pizza Drone simulator that uses user geolocation data input to display optimal path for delivery. Leveraging the Leaflet library for interactive map functionality and a backend API for path computation, the project provides a practical solution for visual route planning.
+Pizza Drone simulator that uses user geolocation data input to display optimal path for delivery. Leveraging the Leaflet library for interactive map functionality and a backend API for path computation. A tool that provides a practical solution for visual route planning.
 
 **Frontend in-progress**
 
