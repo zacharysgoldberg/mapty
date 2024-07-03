@@ -1,108 +1,73 @@
-from .gps import coords_by_address, dist_between_coords
+import logging
+from ..utils.gps import coords_by_address, dist_between_coords
 import requests
-from models import User, Order
 import time
 import json
 
-# [Drone object]
-
-
 class Drone:
-    # [Drone attributes]
     def __init__(self):
         self.remaining_range = 25.00
-        # user selects first
         self.pizza_store = (34.22142886882653, -119.18323113902395)
-        self.current_coords = ()
-        # self.access_token = True
-        self.data = json.loads(requests.get(
-            "http://localhost:8000/orders/find-path").text)
-        # [Optimal path id order]
-        self.orders = [order for order in self.data['orders']]
-        self.addresses = [address for address in self.data['addresses']]
-        self.path = self.data['path']
-        print(f"{self.orders}\n{self.addresses}\n{self.path}")
+        self.current_coords = self.pizza_store
+        self.next_coords = None
 
-    # [Making request to database for auth and order]
+        try:
+            response = requests.get("http://localhost:5000/order/find-path")
+            response.raise_for_status()
+            self.data = response.json()
+            self.path = self.data['path']
+            self.dist = self.data['distance']
+            self.addresses = self.data['addresses']
+            logging.warning(f"Addresses: {self.addresses}\nPath: {self.path}\nDistance: {self.dist}\n")
+        except requests.RequestException as e:
+            logging.error(f"Error fetching path data: {e}")
+            self.data = {}
+            self.path = []
+            self.dist = 0
+            self.addresses = []
+
     def get_next_order(self):
-        for order in self.orders:
-            # [Ensure drone is authenticated before requesting next order]
-            # if self.access_token is None:
-            #     print("\nAuthenticating Drone...\n")
-            #     token = requests.post("http://localhost:8000/auth/token",
-            #       data={"username": "ExampleUser", "password": "test1234!"})
-            #     self.access_token = token.cookies
+        if not self.path:
+            logging.warning("No orders to process.")
+            return
 
-            # if self.access_token:
-            print('----- Drone Authenticated -----\nGetting next order...\n')
-            # response = requests.get(
-            #     f"http://localhost:8000/orders/get-next-order/{order}", cookies=self.access_token)
-
-            # if response.text != 'false':
-            response = requests.get(
-                f"http://localhost:8000/orders/next-order/{order}")
-            address = json.loads(response.text)['address']
-            status = json.loads(response.text)['status']
-
-            print('Next order address:', address)
-            print('Order status:', status)
+        for idx in self.path:
+            address = self.addresses[idx]
+            logging.info(f"Getting next order at address: {address}")
 
             self.next_coords = coords_by_address(address)
-            self.deliver_pizza(order, self.next_coords)
+            self.deliver_pizza(idx, self.next_coords)
 
-            # else:
-            # print('*** Drone Credentials Are Invalid ***\n')
-            # return
-
-        print('No orders left. Returning to store...')
+        logging.info("No orders left. Returning to store...")
         self.current_coords = self.pizza_store
 
-    # [Delivery logic]
+    def deliver_pizza(self, order_id, next_coords):
+        logging.info(f"Current coordinates: {self.current_coords}")
 
-    def deliver_pizza(self, order, next_coords):
-        if len(self.current_coords) == 0:
-            self.current_coords = self.pizza_store
-        if self.current_coords == self.pizza_store:
-            print('Leaving from: Pizza Store')
+        miles_to_address = dist_between_coords(self.current_coords, next_coords)
+        miles_to_store = dist_between_coords(next_coords, self.pizza_store)
+        est_range = round(miles_to_address + miles_to_store, 2)
 
-        print('Current coordinates: -----', self.current_coords, '-----')
-        # [Calculating estimated range for drone to travel to address and back to store]
-        miles_to_address = dist_between_coords(
-            self.current_coords, next_coords)
-        self.miles_to_store = dist_between_coords(
-            next_coords, self.pizza_store)
-        est_range = round(miles_to_address + self.miles_to_store, 2)
+        logging.info(f"Range remaining: {self.remaining_range} miles")
+        logging.info(f"Estimated range: {est_range} miles")
 
-        print("Range remaining:", self.remaining_range, "miles")
-        print("\nEstimated range:", est_range, "miles")
-
-        # [In the event the est range to deliver and return to base is less than remaining range, return to store for new battery]
         if self.remaining_range >= est_range:
-            print('\nDelivering pizza...')
-            # [Set new current coordinates and new remaining range]
+            logging.info(f"Delivering order {order_id} to address: {next_coords}")
             self.current_coords = next_coords
-            self.remaining_range = round(
-                self.remaining_range - miles_to_address, 2)
+            self.remaining_range = round(self.remaining_range - miles_to_address, 2)
             time.sleep(2)
-            # [Ppdating database for delivery to True]
-            # response = requests.post(
-            #     f"http://localhost:8000/orders/deliver-order/{order}", cookies=self.access_token)
-            response = requests.post(
-                f"http://localhost:8000/orders/deliver-order/{order}")
-            status = json.loads(response.text)['status']
-            print(
-                f"Pizza Delivery Status: {status}\nWaiting for next order...\n")
-            time.sleep(2)
+            try:
+                response = requests.post(f"http://localhost:5000/orders/deliver-order/{order_id}")
+                response.raise_for_status()
+                status = response.json().get('status', 'success')
+                logging.info(f"Order {order_id} delivery status: {status}")
+            except requests.RequestException as e:
+                logging.error(f"Error delivering order: {e}")
         else:
-            print('\nReturning to pizza store for new battery...\n')
-            time.sleep(2)
-            self.return_to_store(order)
+            logging.info("Returning to pizza store for new battery...")
+            self.return_to_store()
 
-    # [Resetting current coordinates and remaining range for drone upon returning to base]
-    def return_to_store(self, order):
+    def return_to_store(self):
         self.current_coords = self.pizza_store
         self.remaining_range = 25.00
-        print('Attempting to re-deliver order...\n')
-        # [Attempting redelivery of order]
-        self.deliver_pizza(order, self.next_coords)
-        time.sleep(2)
+        logging.info("Drone returned to store and recharged.")

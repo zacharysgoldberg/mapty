@@ -1,53 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Map Selection</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <style>
+            #map {
+                height: 400px;
+            }
+        </style>
+    </head>
 
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <body>
+        <div id="map"></div>
+        <button id="find-path">Find Shortest Path</button>
 
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            var map = L.map('map').setView([51.505, -0.09], 13); // Initialize map at a certain location and zoom level
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin="" />
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-    <script defer src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin=""></script>
+            var markers = []; // Array to store markers
 
-    <!-- <script defer src="other.js"></script> -->
-    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>pizza drone // map your orders</title>
-  </head>
+            // Event handler for map click
+            map.on('click', function (e) {
+                var marker = L.marker(e.latlng).addTo(map); // Add marker at clicked location
+                markers.push(marker); // Push marker to array
+            });
 
-  <body>
-    <!-- <p>{{ path }}</p> -->
-    <div class="sidebar">
-      <h1 class="card-title">Pizza Drone</h1>
-      <img src="{{url_for('static', filename='images/pizza.png')}}" alt="Logo" class="logo" />
-      <tbody>
-      </tbody>
-      <ul class="orders">
-        <form class="form hidden">
-          <div class="form__row">
-            <label class="form__label">Type</label>
-            <select class="form__input form__input--type">
-              <option value="Base">Base</option>
-              <option value="Order">Order</option>
-            </select>
-          </div>
-          <input style="margin:auto" type="submit" value="Ok">
-        </form>
-        <button class="form__input" id="add_button" style="margin:auto" type="submit">Submit</button>
-      </ul>
-    </div>
-    </ul>
-    </div>
-    <div id="map"></div>
-  </body>
+            var polyline;
+
+            function drawPath(path, points) {
+                if (polyline) {
+                    map.removeLayer(polyline);
+                }
+
+                var latlngs = path.map(function (index) {
+                    return [points[index].lat, points[index].lng];
+                });
+
+                polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+            }
+
+            $('#find-path').click(function () {
+                if (markers.length === 0) {
+                    alert("Please select at least one point on the map.");
+                    return;
+                }
+
+                var points = markers.map(function (marker) {
+                    return {
+                        lat: marker.getLatLng().lat,
+                        lng: marker.getLatLng().lng
+                    };
+                });
+
+                $.ajax({
+                    url: 'http://localhost:5000/order/find-path',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ points: points }),
+                    success: function (response) {
+                        console.log('Shortest path:', response.path);
+                        console.log('Distance:', response.distance);
+                        // Display the shortest path and distance on the frontend
+                    },
+                    error: function (error) {
+                        console.error('Error finding path:', error);
+                    }
+                });
+            });
+
+        </script>
+    </body>
 
 </html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap"
+            rel="stylesheet" />
+
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+            integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+            crossorigin="" />
+
+        <script defer src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+        <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <title>pizza drone // map your orders</title>
+    </head>
+
+    <body> -->
+<!-- <!-- <p>{{ path }}</p> --> -->
+<!-- <div class="sidebar">
+            <h1 class="card-title">Pizza Drone</h1>
+            <img src="{{url_for('static', filename='images/pizza.png')}}" alt="Logo" class="logo" />
+            <tbody>
+            </tbody>
+            <ul class="orders">
+                <form class="form hidden">
+                    <div class="form__row">
+                        <label class="form__label">Type</label>
+                        <select class="form__input form__input--type">
+                            <option value="Base">Base</option>
+                            <option value="Order">Order</option>
+                        </select>
+                    </div>
+                    <input style="margin:auto" type="submit" value="Ok">
+                </form>
+                <button class="form__input" id="add_button" style="margin:auto" type="submit">Submit</button>
+            </ul>
+        </div>
+        </ul>
+        </div>
+        <div id="map"></div>
+    </body>
+
+</html> -->

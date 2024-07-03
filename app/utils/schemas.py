@@ -1,15 +1,16 @@
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 # from datetime import datetime, date
 
 
-class OrderBase(BaseModel):
+class LocationBase(BaseModel):
     id: str
     inputType: str
     date: str
-    time: str
+    time: datetime
     coords: list
 
 
-class Orders(BaseModel):
-    orders: list[OrderBase] = ...
+class Locations(BaseModel):
+    orders: list[LocationBase] = ...

@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run with MyPy Type Check",
+      "type": "shell",
+      "command": "mypy",
+      "args": [
+        "${file}",
+        "&&",
+        "python",
+        "${file}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ],
+}

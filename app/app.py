@@ -1,19 +1,30 @@
-from flask import Flask, redirect, url_for
-from routers import order
+from flask import Flask, render_template, redirect, url_for, jsonify
+from app.routers import orders
+from app.utils.drone import Drone
+from flask_cors import CORS
 import os
+
 
 app = Flask(__name__)
 
+# Enable CORS
+CORS(app) 
 
-app.register_blueprint(order.bp)
+# Register the orders blueprint
+app.register_blueprint(orders.bp)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return redirect(url_for('orders.orders'))
+    # simulate_drone()
+    
+    # Serve map
+    return render_template("index.html")
 
 
-if __name__ == "__main__":
-    port = os.getenv('PORT', 5000)
-    host = os.getenv('HOST', '127.0.0.1')
-    app.run(debug=True, threaded=True, host=host, port=port)
+def simulate_drone():
+    Drone()
+
+
+if __name__ == '__main__':
+    app.run(debug=True, threaded=True)

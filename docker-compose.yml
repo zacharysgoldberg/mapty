@@ -1,31 +1,21 @@
-version: '3.8'
+version: "3.8"
 services:
-  # web:
-  #   build: ./app
-  #   restart: always
-  #   volumes:
-  #     - ./app:/usr/src/app
-  #   expose:
-  #     - 5000
-  #   depends_on:
-  #     - redis_db
-  # nginx:
-  #   build: ./app/nginx
-  #   restart: always
-  #   volumes:
-  #     - ./app:/usr/src/app/nginx
-  #   ports:
-  #     - 8080:80
-  #   depends_on:
-  #     - web
+  web:
+    build: ./app
+    restart: always
+    volumes:
+      - ./app:/usr/src/app
+    expose:
+      - 5000
+    depends_on:
+      - sql_db
 
-  redis_db:
-    image: redislabs/redisearch:edge
+  sql_db:
+    image: postgresql-alpine-16
     ports:
-      - 6379:6379
+      - 5432:5432
     deploy:
-      replicas: 1
       restart_policy:
         condition: on-failure
     volumes:
-      - ${PWD}:/usr/src/app/redis
+      - ${PWD}:/usr/src/app/sql-db

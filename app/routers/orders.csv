@@ -1,4 +1,4 @@
-order_time,address,delivered
+time,address,delivered
 "2022-08-11 12:15:00","6868 Capri Ave, Ventura CA",false
 "2022-08-11 13:15:00","311 E Daily Dr, Camarillo CA",false
 "2022-08-11 14:15:00","3900 Bluefin Cir, Oxnard CA",false
