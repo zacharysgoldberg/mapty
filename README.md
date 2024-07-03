@@ -18,7 +18,7 @@ Pizza Drone simulator that uses user geolocation data input to display optimal p
 - **Backend**: Python, Flask
 - **Data**: OpenStreetMap for geocoding
 - **Database**: SQL (PostgreSQL)
-- **Other Tools**: Docker (for deployment), pytest (for testing)
+- **Other Tools**: Docker (for deployment), PyUnit (for testing)
 
 ## Algorithmic challenge
 
